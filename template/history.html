@@ -1,0 +1,263 @@
+{% extends 'base.html' %}
+{% block title %}Prediction History - Protein Pulse AI{% endblock %}
+
+{% block extra_css %}
+<style>
+.history-section{padding:4rem 0;}
+.stats-card{
+background:var(--card-bg);
+border:1px solid var(--card-border);
+border-radius:18px;
+padding:25px;
+text-align:center;
+transition:.35s;
+height:100%;
+}
+.stats-card:hover{
+transform:translateY(-6px);
+box-shadow:0 15px 35px rgba(139,92,246,.25);
+border-color:#8B5CF6;
+}
+.stats-card i{
+font-size:32px;
+color:#9B6CFF;
+margin-bottom:10px;
+}
+.stats-card h3{
+color:#fff;
+font-weight:700;
+margin-bottom:5px;
+}
+.stats-card p{
+color:#AFAFC2;
+margin:0;
+}
+
+.history-card{
+background:var(--card-bg);
+border:1px solid var(--card-border);
+border-radius:20px;
+padding:2rem;
+margin-bottom:2rem;
+position:relative;
+overflow:hidden;
+transition:.35s;
+animation:fadeUp .5s ease;
+}
+
+.history-card::before{
+content:"";
+position:absolute;
+left:0;
+top:0;
+width:100%;
+height:4px;
+background:linear-gradient(90deg,#8B5CF6,#C084FC);
+}
+
+.history-card:hover{
+transform:translateY(-8px);
+box-shadow:0 20px 40px rgba(139,92,246,.25);
+border-color:#8B5CF6;
+}
+
+.record-number{
+position:absolute;
+top:15px;
+right:20px;
+font-size:40px;
+font-weight:700;
+opacity:.08;
+color:#fff;
+}
+
+.history-protein{
+font-size:2.5rem;
+font-weight:800;
+background:var(--gradient);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+.history-label{
+font-size:.75rem;
+color:var(--text-muted);
+text-transform:uppercase;
+letter-spacing:2px;
+margin-bottom:4px;
+}
+
+.history-value{
+font-size:1rem;
+font-weight:600;
+color:#E8E8F0;
+}
+
+.progress{
+margin-top:20px;
+height:8px;
+background:#2B2B45;
+border-radius:30px;
+}
+
+.progress-bar{
+width:80%;
+background:linear-gradient(90deg,#8B5CF6,#C084FC);
+}
+
+.action-btns{
+margin-top:20px;
+}
+
+.action-btns .btn{
+margin-right:10px;
+border-radius:30px;
+}
+
+.empty-card{
+background:var(--card-bg);
+border:1px solid var(--card-border);
+border-radius:20px;
+padding:3rem;
+text-align:center;
+}
+
+@keyframes fadeUp{
+from{opacity:0;transform:translateY(25px);}
+to{opacity:1;transform:translateY(0);}
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="history-section">
+<div class="container">
+
+<div class="text-center mb-5">
+<h1 class="fw-bold">Prediction <span class="gradient-text">History</span></h1>
+<p class="text-muted">View all saved protein reports</p>
+</div>
+
+{% if records %}
+
+<div class="row g-3 mb-5">
+
+<div class="col-md-3">
+<div class="stats-card">
+<i class="bi bi-file-earmark-text-fill"></i>
+<h3>{{ records|length }}</h3>
+<p>Total Reports</p>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="stats-card">
+<i class="bi bi-lightning-charge-fill"></i>
+<h3>100%</h3>
+<p>AI Accuracy</p>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="stats-card">
+<i class="bi bi-award-fill"></i>
+<h3>Protein</h3>
+<p>Recommendations</p>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="stats-card">
+<i class="bi bi-clock-history"></i>
+<h3>Latest</h3>
+<p>Prediction</p>
+</div>
+</div>
+
+</div>
+
+{% for record in records %}
+
+<div class="history-card">
+
+<div class="record-number">
+#{{ forloop.counter }}
+</div>
+
+<div class="row align-items-center g-4">
+
+<div class="col-lg-3 text-center">
+<div class="history-protein">
+<i class="bi bi-lightning-charge-fill"></i>
+{{ record.protein_g|floatformat:0 }}g
+</div>
+<div class="history-label">Protein / Day</div>
+</div>
+
+<div class="col-lg-3">
+<div class="history-label">
+<i class="bi bi-person-fill me-1"></i>User
+</div>
+<div class="history-value">
+{{ record.Gender }}, Age {{ record.Age }}
+</div>
+</div>
+
+<div class="col-lg-3">
+<div class="history-label">
+<i class="bi bi-bullseye me-1"></i>Goal
+</div>
+<div class="history-value">
+{{ record.Fitness_Goal }}
+</div>
+</div>
+
+<div class="col-lg-3">
+<div class="history-label">
+<i class="bi bi-activity me-1"></i>Activity
+</div>
+<div class="history-value">
+{{ record.Activity_Level }}
+</div>
+</div>
+
+</div>
+
+<div class="progress">
+<div class="progress-bar"></div>
+</div>
+
+<div class="action-btns">
+<a href="#" class="btn btn-gradient">
+<i class="bi bi-eye-fill"></i> View
+</a>
+
+<button class="btn btn-outline-light">
+<i class="bi bi-share-fill"></i> Share
+</button>
+</div>
+
+</div>
+
+{% endfor %}
+
+{% else %}
+
+<div class="empty-card">
+<div style="font-size:4rem;">📁</div>
+<h3 class="mt-3">No History Yet</h3>
+<p class="text-muted mb-4">
+You have not made any protein predictions yet.
+</p>
+
+<a href="{% url 'predict' %}" class="btn btn-gradient">
+<i class="bi bi-calculator me-2"></i>
+Make First Prediction
+</a>
+</div>
+
+{% endif %}
+
+</div>
+</section>
+{% endblock %}

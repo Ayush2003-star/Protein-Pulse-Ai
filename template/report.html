@@ -1,0 +1,95 @@
+
+{% extends 'base.html' %}
+{% block title %}Prediction History - Protein Pulse AI{% endblock %}
+{% block extra_css %}
+<style>
+.history-section {
+  padding: 4rem 0;
+}
+.history-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 18px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+.history-protein {
+  font-size: 2rem;
+  font-weight: 800;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.history-label {
+  font-size: .75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.history-value {
+  font-size: .95rem;
+  color: #E8E8F0;
+  font-weight: 600;
+}
+.empty-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  padding: 3rem;
+  text-align: center;
+}
+</style>
+{% endblock %}
+{% block content %}
+<section class="history-section">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h1 class="fw-bold mb-2">
+        Prediction <span class="gradient-text">History</span>
+      </h1>
+      <p class="text-muted">
+        View all saved protein reports
+      </p>
+    </div>
+    {% if records %}
+      {% for record in records %}
+      <div class="history-card">
+        <div class="row align-items-center g-3">
+          <div class="col-md-3">
+            <div class="history-protein">{{ record.protein_g|floatformat:0 }}g</div>
+            <div class="history-label">protein / day</div>
+          </div>
+       
+              <div class="col-sm-6">
+                <div class="history-label">User</div>
+                <div class="history-value">{{ record.Gender }}, Age {{ record.Age }}</div>
+              </div>
+              <div class="col-sm-6">
+                <div class="history-label">Goal</div>
+                <div class="history-value">{{ record.Fitness_Goal }}</div>
+              </div>
+              <div class="col-sm-6">
+                <div class="history-label">Activity</div>
+                <div class="history-value">{{ record.Activity_Level }}</div>
+              </div>
+            </div>
+          </div>
+        
+      {% endfor %}
+    {% else %}
+      <div class="empty-card">
+        <div style="font-size:3rem;">📁</div>
+        <h4 class="mt-3">No History Yet</h4>
+        <p class="text-muted mb-4">
+          You have not made any protein predictions yet.
+        </p>
+        <a href="{% url 'predict' %}" class="btn btn-gradient">
+          <i class="bi bi-calculator me-2"></i>Make First Prediction
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
+ 

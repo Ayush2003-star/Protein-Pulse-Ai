@@ -1,0 +1,568 @@
+{% extends 'base.html' %}
+{% block title %}Protein Pulse AI – Smart Protein Calculator{% endblock %}
+{% block extra_css %}
+<style>
+/* ── Page styling ───────────────────────────────────────────── */
+.home-page {
+  background:
+    radial-gradient(circle at top left, rgba(108,99,255,.16), transparent 30%),
+    radial-gradient(circle at top right, rgba(255,101,132,.12), transparent 28%),
+    radial-gradient(circle at bottom center, rgba(67,233,123,.08), transparent 30%);
+}
+.gradient-text {
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-section {
+  padding: 5.5rem 0 4rem;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  background: rgba(108,99,255,.12);
+  border: 1px solid rgba(108,99,255,.28);
+  color: #B8B3FF;
+  padding: .45rem 1rem;
+  border-radius: 50px;
+  font-size: .82rem;
+  font-weight: 700;
+}
+.hero-title {
+  font-size: clamp(2.3rem, 5vw, 4rem);
+  font-weight: 800;
+  line-height: 1.15;
+  color: #FFFFFF;
+  margin-bottom: 1.2rem;
+}
+.hero-text {
+  color: #B8B8D0;
+  font-size: 1.05rem;
+  line-height: 1.8;
+  max-width: 560px;
+}
+.hero-visual-card {
+  background: linear-gradient(180deg, rgba(26,26,46,.95), rgba(18,18,35,.95));
+  border: 1px solid var(--card-border);
+  border-radius: 28px;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0,0,0,.35);
+}
+.hero-visual-card::before {
+  content: "";
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  background: rgba(108,99,255,.16);
+  border-radius: 50%;
+  top: -40px;
+  right: -40px;
+  filter: blur(10px);
+}
+.hero-main-icon {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 1.5rem;
+  border-radius: 24px;
+  background: rgba(108,99,255,.12);
+  border: 1px solid rgba(108,99,255,.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+}
+.metric-mini {
+  background: #121225;
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  padding: 1rem;
+  text-align: center;
+}
+.metric-mini h4 {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #fff;
+}
+.metric-mini p {
+  margin: .2rem 0 0;
+  color: #9FA0BF;
+  font-size: .8rem;
+}
+.section-heading {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+.section-heading h2 {
+  font-size: clamp(1.8rem, 3.6vw, 2.8rem);
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: .8rem;
+}
+.section-heading p {
+  color: #A8A8C8;
+  margin: 0;
+  font-size: 1rem;
+}
+.feature-card,
+.step-card {
+  background: linear-gradient(180deg, rgba(26,26,46,.96), rgba(20,20,36,.96));
+  border: 1px solid var(--card-border);
+  border-radius: 22px;
+  padding: 1.8rem;
+  height: 100%;
+  transition: all .3s ease;
+  box-shadow: 0 12px 28px rgba(0,0,0,.22);
+}
+.feature-card:hover,
+.step-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(108,99,255,.45);
+  box-shadow: 0 18px 35px rgba(0,0,0,.28);
+}
+.feature-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(108,99,255,.12);
+  border: 1px solid rgba(108,99,255,.22);
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+.feature-card h5,
+.step-card h5 {
+  color: #fff;
+  font-weight: 700;
+  margin-bottom: .7rem;
+}
+.feature-card p,
+.step-card p {
+  color: #A8A8C8;
+  margin-bottom: 0;
+  line-height: 1.7;
+  font-size: .94rem;
+}
+.step-number {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  margin: 0 auto 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gradient);
+  color: #fff;
+  font-weight: 800;
+  box-shadow: 0 8px 20px rgba(108,99,255,.35);
+}
+.cta-box {
+  background: linear-gradient(135deg, rgba(108,99,255,.12), rgba(255,101,132,.08));
+  border: 1px solid var(--card-border);
+  border-radius: 28px;
+  padding: 3rem 2rem;
+  text-align: center;
+  box-shadow: 0 18px 45px rgba(0,0,0,.25);
+}
+.cta-box h2 {
+  color: #fff;
+  font-weight: 800;
+  margin-bottom: 1rem;
+}
+.cta-box p {
+  color: #B6B6D2;
+  max-width: 600px;
+  margin: 0 auto 1.8rem;
+  line-height: 1.8;
+}
+.stat-row {
+  margin-top: 2rem;
+}
+.stat-card {
+  background: #121225;
+  border: 1px solid var(--card-border);
+  border-radius: 18px;
+  padding: 1.1rem;
+  text-align: center;
+}
+.stat-card h3 {
+  color: #fff;
+  font-size: 1.7rem;
+  margin: 0 0 .3rem;
+  font-weight: 800;
+}
+.stat-card p {
+  margin: 0;
+  color: #999AB9;
+  font-size: .82rem;
+}
+/* ── Charts section ───────────────────────────────────────── */
+.chart-card {
+  background: linear-gradient(180deg, rgba(26,26,46,.96), rgba(20,20,36,.96));
+  border: 1px solid var(--card-border);
+  border-radius: 24px;
+  padding: 1.5rem;
+  height: 100%;
+  box-shadow: 0 12px 28px rgba(0,0,0,.22);
+}
+.chart-card h5 {
+  color: #fff;
+  font-weight: 800;
+  margin-bottom: .4rem;
+}
+.chart-card p {
+  color: #A8A8C8;
+  font-size: .88rem;
+  margin-bottom: 1rem;
+}
+.chart-box {
+  position: relative;
+  height: 300px;
+}
+.chart-note {
+  margin-top: .8rem;
+  font-size: .78rem;
+  color: #8F90B2;
+  line-height: 1.6;
+}
+@media (max-width: 991px) {
+  .hero-section {
+    padding: 4rem 0 3rem;
+    text-align: center;
+  }
+  .hero-text {
+    margin: 0 auto;
+  }
+  .chart-box {
+    height: 260px;
+  }
+}
+</style>
+{% endblock %}
+{% block content %}
+<div class="home-page">
+  <!-- Hero -->
+  <section class="hero-section">
+    <div class="container">
+      <div class="row align-items-center g-5">
+        <div class="col-lg-6">
+          <div class="hero-badge mb-3">
+            <i class="bi bi-stars"></i>
+            Smart Nutrition
+          </div>
+          <h1 class="hero-title">
+            Find Your Daily
+            <span class="gradient-text">Protein Goal</span>
+            in Seconds
+          </h1>
+          <p class="hero-text mb-4">
+            Protein Pulse AI helps calculate the right amount of protein
+            based on age, height, weight, activity level, goal, meals per day,
+            and fitness experience. It is simple, smart, and easy to understand.
+          </p>
+          <div class="d-flex flex-wrap gap-3">
+            <a href="{% url 'predict' %}" class="btn btn-gradient btn-lg">
+              <i class="bi bi-calculator me-2"></i>Start Calculator
+            </a>
+            <a href="{% url 'history' %}" class="btn btn-outline-light-custom btn-lg">
+              <i class="bi bi-clock-history me-2"></i>View History
+            </a>
+          </div>
+      
+        </div>
+        <div class="col-lg-6">
+          <div class="hero-visual-card text-center">
+            <div class="hero-main-icon">🧬</div>
+            <h4 style="color:#fff;font-weight:800;">Protein Pulse AI Report</h4>
+            <p style="color:#A9A9C7;line-height:1.7;margin-bottom:1.5rem;">
+              Get your protein target, BMI, BMR, TDEE, meal guide,
+              and smart tips in one neat report.
+            </p>
+            <div class="row g-3">
+              <div class="col-4">
+                <div class="metric-mini">
+                  <h4>BMI</h4>
+                  <p>Body Score</p>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="metric-mini">
+                  <h4>BMR</h4>
+                  <p>Calories</p>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="metric-mini">
+                  <h4>TDEE</h4>
+                  <p>Energy Need</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+    <!-- Charts / Insights -->
+    <section class="py-5">
+      <div class="container">
+        <div class="section-heading">
+          <h2>Nutrition <span class="gradient-text">Insights Dashboard</span></h2>
+          <p>Simple visual charts to make the homepage feel like a smart health dashboard.</p>
+        </div>
+        <div class="row g-4">
+          <div class="col-lg-4">
+            <div class="chart-card">
+              <h5>Protein Source Mix</h5>
+              <p>Balanced protein choices for both vegetarian and non-vegetarian Persons.</p>
+              <div class="chart-box">
+                <canvas id="proteinSourceChart"></canvas>
+              </div>
+              <div class="chart-note">
+                Includes paneer, tofu, dal, rajma, soy, eggs, chicken and fish.
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="chart-card">
+              <h5>Protein Need by Activity</h5>
+              <p>Higher activity usually means the body needs more protein for recovery.</p>
+              <div class="chart-box">
+                <canvas id="activityProteinChart"></canvas>
+              </div>
+              <div class="chart-note">
+                This graph shows sample protein targets based on activity level.
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="chart-card">
+              <h5>Protein Distribution Across Meals</h5>
+              <p>Spreading protein across the day helps the body use it better.</p>
+              <div class="chart-box">
+                <canvas id="mealProteinChart"></canvas>
+              </div>
+              <div class="chart-note">
+                Example split: breakfast, lunch, dinner and snacks.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  <!-- Features -->
+  <section class="py-5">
+    <div class="container">
+      <div class="section-heading">
+        <h2>Why Everyone Will Like <span class="gradient-text">Protein Pulse AI</span></h2>
+        <p>Clean design, simple results, and useful health insights.</p>
+      </div>
+      <div class="row g-4">
+        {% for feat in features_list %}
+        <div class="col-md-6 col-lg-4">
+          <div class="feature-card">
+            <div class="feature-icon">{{ feat.icon }}</div>
+            <h5>{{ feat.title }}</h5>
+            <p>{{ feat.desc }}</p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+</section>
+<section class ="py-5">
+    <div class="container g-4">
+      <div class="section-heading">
+        <h2>Step to Use  <span class="gradient-text">Protein Pulse AI</span></h2>
+        <p>Follow these steps to use <span class="gradient-text">Protein Pulse AI</span></p>
+      </div>
+      <div class="row g-4">
+        {% for step in steps_list %}
+        <div class="col-md-6 col-lg-4">
+          <div class="feature-card">
+            <div class="feature-icon">{{ step.icon }}</div>
+            <h5>{{ step.title }}</h5>
+            <p>{{ step.desc }}</p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+
+  <!-- CTA -->
+  <section class="py-5">
+    <div class="container">
+      <div class="cta-box">
+        <div style="font-size:3rem;margin-bottom:1rem;">⚡</div>
+        <h2>Ready to Check Your <span class="gradient-text">Protein Report?</span></h2>
+        <p>
+          Enter your details and get a beautiful AI-based report with your
+          daily protein target, body values, meal guidance, and healthy tips.
+        </p>
+        <a href="{% url 'predict' %}" class="btn btn-gradient btn-lg px-5">
+          <i class="bi bi-lightning-charge-fill me-2"></i>Calculate Now
+        </a>
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+/* Common chart styling for dark theme */
+const commonLegendLabels = {
+  color: '#D6D6E8',
+  font: {
+    family: 'Inter',
+    size: 12
+  }
+};
+const commonTicks = {
+  color: '#A8A8C8',
+  font: {
+    family: 'Inter',
+    size: 11
+  }
+};
+/* 1. Doughnut chart - protein source mix */
+const proteinSourceCtx = document.getElementById('proteinSourceChart');
+if (proteinSourceCtx) {
+  new Chart(proteinSourceCtx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Dairy / Paneer', 'Dal & Legumes', 'Soy / Tofu', 'Eggs', 'Chicken / Fish', 'Nuts & Seeds'],
+      datasets: [{
+        data: [24, 22, 16, 12, 14, 12],
+        backgroundColor: [
+          '#6C63FF',
+          '#43E97B',
+          '#38F9D7',
+          '#FFD166',
+          '#FF6584',
+          '#9B59B6'
+        ],
+        borderColor: '#1A1A2E',
+        borderWidth: 3,
+        hoverOffset: 8
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '65%',
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: commonLegendLabels
+        }
+      }
+    }
+  });
+}
+/* 2. Bar chart - activity vs protein need */
+const activityProteinCtx = document.getElementById('activityProteinChart');
+if (activityProteinCtx) {
+  new Chart(activityProteinCtx, {
+    type: 'bar',
+    data: {
+      labels: ['Sedentary', 'Light', 'Moderate', 'Very Active', 'Athlete'],
+      datasets: [{
+        label: 'Protein (g/day)',
+        data: [55, 75, 95, 120, 145],
+        backgroundColor: [
+          'rgba(108,99,255,0.75)',
+          'rgba(123,104,238,0.75)',
+          'rgba(155,89,182,0.75)',
+          'rgba(255,101,132,0.75)',
+          'rgba(67,233,123,0.75)'
+        ],
+        borderRadius: 10,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false
+        }
+      },
+      scales: {
+        x: {
+          ticks: commonTicks,
+          grid: {
+            display: false
+          }
+        },
+        y: {
+          beginAtZero: true,
+          ticks: commonTicks,
+          grid: {
+            color: 'rgba(255,255,255,0.08)'
+          }
+        }
+      }
+    }
+  });
+}
+/* 3. Line chart - meal protein distribution */
+const mealProteinCtx = document.getElementById('mealProteinChart');
+if (mealProteinCtx) {
+  new Chart(mealProteinCtx, {
+    type: 'line',
+    data: {
+      labels: ['Breakfast', 'Lunch', 'Evening Snack', 'Dinner'],
+      datasets: [{
+        label: 'Protein Split (%)',
+        data: [25, 30, 15, 30],
+        borderColor: '#43E97B',
+        backgroundColor: 'rgba(67,233,123,0.18)',
+        fill: true,
+        tension: 0.35,
+        pointBackgroundColor: '#43E97B',
+        pointBorderColor: '#ffffff',
+        pointRadius: 5,
+        pointHoverRadius: 7
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          labels: commonLegendLabels
+        }
+      },
+      scales: {
+        x: {
+          ticks: commonTicks,
+          grid: {
+            display: false
+          }
+        },
+        y: {
+          beginAtZero: true,
+          ticks: commonTicks,
+          grid: {
+            color: 'rgba(255,255,255,0.08)'
+          }
+        }
+      }
+    }
+  });
+}
+</script>
+{% endblock %}

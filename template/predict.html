@@ -1,0 +1,557 @@
+{% extends 'base.html' %}
+{% block title %}Protein Calculator – Protein Pulse AI{% endblock %}
+{% block extra_css %}
+<style>
+/* ═══ Base Styles ═══ */
+.predict-page {
+  background: radial-gradient(circle at top left, rgba(108,99,255,.12), transparent 28%),
+              radial-gradient(circle at bottom right, rgba(255,101,132,.10), transparent 28%);
+}
+.gradient-text {
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+/* ═══ Hero Section ═══ */
+.predict-hero {
+  padding: 4rem 0 2.5rem;
+  text-align: center;
+}
+.predict-hero h1 {
+  color: #fff;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  margin-bottom: .8rem;
+}
+.predict-hero p {
+  color: #B6B6D0;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.8;
+}
+/* ═══ Form Card ═══ */
+.main-form-card {
+  background: linear-gradient(180deg, rgba(26,26,46,.96), rgba(18,18,34,.97));
+  border: 1px solid var(--card-border);
+  border-radius: 24px;
+  padding: 2rem;
+  box-shadow: 0 18px 45px rgba(0,0,0,.28);
+}
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+  color: #fff;
+  font-weight: 800;
+  font-size: 1rem;
+  margin: 1.5rem 0 1rem;
+}
+.section-title:first-child {
+  margin-top: 0;
+}
+.section-line {
+  height: 1px;
+  background: linear-gradient(to right, rgba(108,99,255,.35), transparent);
+  margin-bottom: 1.2rem;
+}
+/* ═══ Input Fields ═══ */
+.field-card {
+  background: rgba(255,255,255,.02);
+  border: 1px solid rgba(255,255,255,.05);
+  border-radius: 16px;
+  padding: 1rem;
+  transition: all .25s ease;
+}
+.field-card:hover {
+  border-color: rgba(108,99,255,.28);
+  transform: translateY(-2px);
+}
+.field-label {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  color: #D7D7EA;
+  font-size: .88rem;
+  font-weight: 700;
+  margin-bottom: .6rem;
+}
+.field-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(108,99,255,.12);
+  font-size: .9rem;
+}
+.field-help {
+  color: #8F90B2;
+  font-size: .75rem;
+  margin-top: .4rem;
+}
+.main-form-card input[type="number"],
+.main-form-card select {
+  width: 100%;
+  background: #111122;
+  border: 1px solid #2A2A45;
+  color: #F2F2FA;
+  border-radius: 12px;
+  padding: .8rem 1rem;
+  font-size: .92rem;
+  outline: none;
+  transition: all .25s ease;
+}
+.main-form-card input:focus,
+.main-form-card select:focus {
+  border-color: #6C63FF;
+  box-shadow: 0 0 0 3px rgba(108,99,255,.18);
+}
+.main-form-card input:invalid,
+.main-form-card select:invalid {
+  border-color: #FF6584;
+}
+.main-form-card select option {
+  background: #1A1A2E;
+  color: #fff;
+}
+/* ═══ Badges ═══ */
+.new-badge {
+  background: rgba(67,233,123,.14);
+  border: 1px solid rgba(67,233,123,.28);
+  color: #43E97B;
+  font-size: .65rem;
+  font-weight: 800;
+  padding: .18rem .5rem;
+  border-radius: 50px;
+  margin-left: .4rem;
+  text-transform: uppercase;
+}
+/* ═══ Submit Button ═══ */
+.submit-box {
+  background: linear-gradient(135deg, rgba(108,99,255,.08), rgba(255,101,132,.05));
+  border: 1px solid rgba(108,99,255,.16);
+  border-radius: 18px;
+  padding: 1.2rem;
+  margin-top: 1.5rem;
+}
+.btn-submit {
+  width: 100%;
+  background: var(--gradient);
+  border: none;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 800;
+  border-radius: 14px;
+  padding: 1rem;
+  box-shadow: 0 10px 25px rgba(108,99,255,.28);
+  transition: all .3s ease;
+}
+.btn-submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(108,99,255,.36);
+}
+.btn-submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+/* ═══ Sidebar ═══ */
+.side-card {
+  background: linear-gradient(180deg, rgba(26,26,46,.95), rgba(18,18,34,.95));
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  padding: 1.3rem;
+  margin-bottom: 1.2rem;
+}
+.side-card h5 {
+  color: #fff;
+  font-size: .95rem;
+  font-weight: 800;
+  margin-bottom: .9rem;
+}
+.info-row {
+  display: flex;
+  gap: .7rem;
+  margin-bottom: .9rem;
+}
+.info-row:last-child {
+  margin-bottom: 0;
+}
+.info-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--primary);
+  margin-top: .4rem;
+  flex-shrink: 0;
+}
+.info-row strong {
+  color: #EAEAF8;
+  display: block;
+  font-size: .84rem;
+}
+.info-row span {
+  color: #9D9DBA;
+  font-size: .78rem;
+}
+.quick-chip {
+  display: inline-block;
+  padding: .35rem .75rem;
+  border-radius: 50px;
+  background: rgba(108,99,255,.12);
+  border: 1px solid rgba(108,99,255,.2);
+  color: #C4BEFF;
+  font-size: .74rem;
+  margin: .2rem;
+  font-weight: 700;
+}
+</style>
+{% endblock %}
+{% block content %}
+<div class="predict-page">
+ 
+  <!-- Hero Section -->
+  <div class="predict-hero">
+    <div class="container">
+      <div class="d-inline-flex align-items-center gap-2 mb-3"
+           style="background:rgba(108,99,255,.12);border:1px solid rgba(108,99,255,.25);
+                  padding:.45rem 1rem;border-radius:50px;color:#C6C1FF;font-size:.8rem;font-weight:700;">
+        <i class="bi bi-cpu"></i>
+        AI-Powered Calculator
+      </div>
+      <h1>Calculate Your <span class="gradient-text">Protein Needs</span></h1>
+      <p>
+        Fill in your details below and get a personalized protein recommendation
+        with meal planning and health insights.
+      </p>
+    </div>
+  </div>
+  <!-- Main Content -->
+  <div class="container pb-5">
+    <div class="row g-4">
+      
+      <!-- Left: Form -->
+      <div class="col-lg-8">
+        <div class="main-form-card">
+          <form method="POST" action="" id="proteinForm" novalidate>
+            {% csrf_token %}
+            <!-- Personal Details -->
+            <div class="section-title">
+              <i class="bi bi-person-fill" style="color:var(--primary);"></i>
+              Personal Details
+            </div>
+            <div class="section-line"></div>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <div class="field-card">
+                  <label class="field-label" for="age">
+                    <span class="field-icon">🎂</span> Age
+                  </label>
+                  <input type="number" id="age" name="age" 
+                         min="10" max="100" step="1"
+                         placeholder="e.g., 25" 
+                         value="{{ request.POST.age|default:'' }}" 
+                         required
+                         oninvalid="this.setCustomValidity('Please enter age between 10 and 100')"
+                         oninput="this.setCustomValidity('')">
+                  <div class="field-help">Your age in years (10-100)</div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="field-card">
+                  <label class="field-label" for="gender">
+                    <span class="field-icon">👤</span> Gender
+                  </label>
+                  <select id="gender" name="gender" required
+                          oninvalid="this.setCustomValidity('Please select your gender')"
+                          oninput="this.setCustomValidity('')">
+                    <option value="">Select gender</option>
+                    <option value="Male" {% if request.POST.gender == 'Male' %}selected{% endif %}>Male</option>
+                    <option value="Female" {% if request.POST.gender == 'Female' %}selected{% endif %}>Female</option>
+                  </select>
+                  <div class="field-help">Affects BMR and body composition</div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="field-card">
+                  <label class="field-label" for="height_cm">
+                    <span class="field-icon">📏</span> Height (cm)
+                  </label>
+                  <input type="number" id="height_cm" name="height_cm" 
+                         min="100" max="250" step="0.1"
+                         placeholder="e.g., 170" 
+                         value="{{ request.POST.height_cm|default:'' }}" 
+                         required
+                         oninvalid="this.setCustomValidity('Please enter height between 100 and 250 cm')"
+                         oninput="this.setCustomValidity('')">
+                  <div class="field-help">Your height in centimeters (100-250)</div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="field-card">
+                  <label class="field-label" for="weight_kg">
+                    <span class="field-icon">⚖️</span> Weight (kg)
+                  </label>
+                  <input type="number" id="weight_kg" name="weight_kg" 
+                         min="30" max="300" step="0.1"
+                         placeholder="e.g., 70" 
+                         value="{{ request.POST.weight_kg|default:'' }}" 
+                         required
+                         oninvalid="this.setCustomValidity('Please enter weight between 30 and 300 kg')"
+                         oninput="this.setCustomValidity('')">
+                  <div class="field-help">Your current weight in kilograms (30-300)</div>
+                </div>
+              </div>
+            </div>
+            <!-- Lifestyle & Goals -->
+            <div class="section-title">
+              <i class="bi bi-activity" style="color:#FF6584;"></i>
+              Lifestyle & Goals
+            </div>
+            <div class="section-line"></div>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <div class="field-card">
+                  <label class="field-label" for="activity_level">
+                    <span class="field-icon">🏃</span> Activity Level
+                  </label>
+                  <select id="activity_level" name="activity_level" required
+                          oninvalid="this.setCustomValidity('Please select your activity level')"
+                          oninput="this.setCustomValidity('')">
+                    <option value="">Select activity level</option>
+                    <option value="sedentary" {% if request.POST.activity_level == 'sedentary' %}selected{% endif %}>
+                      Sedentary (Little/no exercise)
+                    </option>
+                    <option value="lightly_active" {% if request.POST.activity_level == 'lightly_active' %}selected{% endif %}>
+                      Lightly Active (1-3 days/week)
+                    </option>
+                    <option value="moderately_active" {% if request.POST.activity_level == 'moderately_active' %}selected{% endif %}>
+                      Moderately Active (3-5 days/week)
+                    </option>
+                    <option value="very_active" {% if request.POST.activity_level == 'very_active' %}selected{% endif %}>
+                      Very Active (6-7 days/week)
+                    </option>
+                    <option value="extra_active" {% if request.POST.activity_level == 'extra_active' %}selected{% endif %}>
+                      Extra Active (Athlete/2x daily)
+                    </option>
+                  </select>
+                  <div class="field-help">How often do you exercise?</div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="field-card">
+                  <label class="field-label" for="purpose">
+                    <span class="field-icon">🎯</span> Fitness Goal
+                  </label>
+                  <select id="purpose" name="purpose" required
+                          oninvalid="this.setCustomValidity('Please select your fitness goal')"
+                          oninput="this.setCustomValidity('')">
+                    <option value="">Select your goal</option>
+                    <option value="weight_loss" {% if request.POST.purpose == 'weight_loss' %}selected{% endif %}>
+                      Weight Loss
+                    </option>
+                    <option value="maintain" {% if request.POST.purpose == 'maintain' %}selected{% endif %}>
+                      Maintain Weight
+                    </option>
+                    <option value="weight_gain" {% if request.POST.purpose == 'weight_gain' %}selected{% endif %}>
+                      Weight Gain
+                    </option>
+                    <option value="muscle_gain" {% if request.POST.purpose == 'muscle_gain' %}selected{% endif %}>
+                      Muscle Gain
+                    </option>
+                  </select>
+                  <div class="field-help">Your primary fitness objective</div>
+                </div>
+              </div>
+            </div>
+            <!-- Advanced Options -->
+            <div class="section-title">
+              <i class="bi bi-stars" style="color:#43E97B;"></i>
+              Advanced Options
+              <span class="new-badge">New</span>
+            </div>
+            <div class="section-line"></div>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <div class="field-card">
+                  <label class="field-label" for="meals_per_day">
+                    <span class="field-icon">🍽️</span> Meals Per Day
+                  </label>
+                  <select id="meals_per_day" name="meals_per_day" required
+                          oninvalid="this.setCustomValidity('Please select number of meals')"
+                          oninput="this.setCustomValidity('')">
+                    {% for i in "12345678" %}
+                      <option value="{{ i }}" {% if request.POST.meals_per_day == i or i == '3' and not request.POST.meals_per_day %}selected{% endif %}>
+                        {{ i }} meal{% if i != '1' %}s{% endif %}
+                      </option>
+                    {% endfor %}
+                  </select>
+                  <div class="field-help">How many meals do you eat daily? (1-8)</div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="field-card">
+                  <label class="field-label" for="fitness_experience">
+                    <span class="field-icon">💪</span> Fitness Experience
+                  </label>
+                  <select id="fitness_experience" name="fitness_experience" required
+                          oninvalid="this.setCustomValidity('Please select your fitness experience')"
+                          oninput="this.setCustomValidity('')">
+                    <option value="beginner" {% if request.POST.fitness_experience == 'beginner' %}selected{% endif %}>
+                      Beginner
+                    </option>
+                    <option value="intermediate" {% if request.POST.fitness_experience == 'intermediate' or not request.POST.fitness_experience %}selected{% endif %}>
+                      Intermediate
+                    </option>
+                    <option value="advanced" {% if request.POST.fitness_experience == 'advanced' %}selected{% endif %}>
+                      Advanced
+                    </option>
+                  </select>
+                  <div class="field-help">Your training experience level</div>
+                </div>
+              </div>
+            </div>
+            <!-- Submit -->
+            <div class="submit-box">
+              <div class="mb-3" style="color:#B9B9D3;font-size:.88rem;">
+                ✅ You'll receive: Protein target, BMI, BMR, TDEE, meal guide & personalized tips
+              </div>
+              <button type="submit" class="btn-submit" id="submitBtn">
+                <span id="btnText">
+                  <i class="bi bi-lightning-charge-fill me-2"></i>Calculate My Protein
+                </span>
+                
+                <span id="btnLoader" class="d-none">
+                  <span class="spinner-border spinner-border-sm me-2"></span>
+                  Calculating...
+                </span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <!-- Right: Sidebar -->
+      <div class="col-lg-4">
+        
+        <!-- Why We Ask -->
+        <div class="side-card">
+          <h5>
+            <i class="bi bi-question-circle me-2" style="color:var(--primary);"></i>
+            Why We Ask These
+          </h5>
+          
+          <div class="info-row">
+            <div class="info-dot"></div>
+            <div>
+              <strong>Age</strong>
+              <span>Older adults need more protein for muscle maintenance.</span>
+            </div>
+          </div>
+          
+          <div class="info-row">
+            <div class="info-dot"></div>
+            <div>
+              <strong>Gender</strong>
+              <span>Males typically have more muscle mass.</span>
+            </div>
+          </div>
+          
+          <div class="info-row">
+            <div class="info-dot"></div>
+            <div>
+              <strong>Weight</strong>
+              <span>Protein needs scale with body weight.</span>
+            </div>
+          </div>
+          
+          <div class="info-row">
+            <div class="info-dot"></div>
+            <div>
+              <strong>Activity</strong>
+              <span>More activity requires more recovery protein.</span>
+            </div>
+          </div>
+          
+          <div class="info-row">
+            <div class="info-dot"></div>
+            <div>
+              <strong>Goal</strong>
+              <span>Different goals need different protein amounts.</span>
+            </div>
+          </div>
+          
+          <div class="info-row">
+            <div class="info-dot"></div>
+            <div>
+              <strong>Meals/day</strong>
+              <span>Affects protein distribution and absorption.</span>
+            </div>
+          </div>
+          
+          <div class="info-row">
+            <div class="info-dot"></div>
+            <div>
+              <strong>Experience</strong>
+              <span>Training adaptation increases protein needs.</span>
+            </div>
+          </div>
+        </div>
+        <!-- Protein Sources -->
+        <div class="side-card">
+          <h5>
+            <i class="bi bi-lightbulb me-2" style="color:#43E97B;"></i>
+            Healthy Protein Sources
+          </h5>
+          <div>
+            <span class="quick-chip">Paneer</span>
+            <span class="quick-chip">Tofu</span>
+            <span class="quick-chip">Dal</span>
+            <span class="quick-chip">Rajma</span>
+            <span class="quick-chip">Chana</span>
+            <span class="quick-chip">Milk</span>
+            <span class="quick-chip">Curd</span>
+            <span class="quick-chip">Eggs</span>
+            <span class="quick-chip">Chicken</span>
+            <span class="quick-chip">Fish</span>
+          </div>
+        </div>
+        <!-- What You Get -->
+        <div class="side-card">
+          <h5>
+            <i class="bi bi-cpu me-2" style="color:#FF6584;"></i>
+            What You'll Get
+          </h5>
+          <p style="color:#A9A9C8;font-size:.84rem;line-height:1.7;margin:0;">
+            Your personalized report includes daily protein target, body composition analysis
+            (BMI, body fat %, lean mass), metabolic data (BMR, TDEE), meal distribution plan,
+            and actionable health tips tailored to your goals.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+// Form validation and loading state
+document.getElementById('proteinForm').addEventListener('submit', function(e) {
+  // Check HTML5 validity
+  if (!this.checkValidity()) {
+    e.preventDefault();
+    e.stopPropagation();
+    this.classList.add('was-validated');
+    return false;
+  }
+  
+  // Show loading state
+  const btnText = document.getElementById('btnText');
+  const btnLoader = document.getElementById('btnLoader');
+  const submitBtn = document.getElementById('submitBtn');
+  
+  btnText.classList.add('d-none');
+  btnLoader.classList.remove('d-none');
+  submitBtn.disabled = true;
+});
+</script>
+{% endblock %}
