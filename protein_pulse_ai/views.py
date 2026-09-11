@@ -206,7 +206,7 @@ def predict(request):
          data_frame['gender']=le_2.transform(data_frame['gender'])
          data_frame['purpose']=le_3.transform(data_frame['purpose'])
          print('extra cdsjkngjsdgn',data_frame.columns)
-         pipeline = joblib.load('model\protein_pipeline.joblib')
+         pipeline = joblib.load('model/protein_pipeline.joblib')
          protein_g = pipeline.predict(data_frame)
          print('protein_g',protein_g[0])
          
