@@ -26,6 +26,9 @@ SECRET_KEY = 'django-insecure-upao28-n79kk9v8nbn8(n&g!_l#d@yycd^3u^p58h!06dhk9_o
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
+CSRF_TRUSTED_ORIGINS = [
+ 'https://protein-pulse-ai-production.up.railway.app'
+]
 
 
 # Application definition
